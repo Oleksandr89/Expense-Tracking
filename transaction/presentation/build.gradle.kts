@@ -26,6 +26,9 @@ android {
 }
 
 dependencies {
+    //modules
+    implementation(project(":core:designsystem"))
+    implementation(project(":core:domain"))
 
     //core
     implementation(libs.androidx.core.ktx)
