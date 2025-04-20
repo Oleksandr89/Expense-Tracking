@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TextButton(
     modifier: Modifier = Modifier,
-    iconRsId: Int,
+    iconRsId: Int? = null,
     text: String,
     onClick: ()-> Unit
 ) {
@@ -24,12 +24,14 @@ fun TextButton(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primaryContainer)
     ) {
-        Icon(
-            painter = painterResource(iconRsId),
-            tint = MaterialTheme.colorScheme.onSurface,
-            contentDescription = text
-        )
-        Spacer(Modifier.width(8.dp))
+        iconRsId?.let { icon ->
+            Icon(
+                painter = painterResource(icon),
+                tint = MaterialTheme.colorScheme.onSurface,
+                contentDescription = text
+            )
+            Spacer(Modifier.width(8.dp))
+        }
         Text(
             text = text,
             style = MaterialTheme.typography.bodyMedium,
