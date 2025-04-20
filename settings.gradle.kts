@@ -21,3 +21,13 @@ dependencyResolutionManagement {
 
 rootProject.name = "Expense Tracking"
 include(":app")
+include(":core:common")
+include(":core:designsystem")
+include(":core:database")
+include(":core:network")
+include(":core:domain")
+include(":core:data")
+include(":balance:presentation")
+include(":balance:domain")
+include(":balance:data")
+include(":transaction:presentation")

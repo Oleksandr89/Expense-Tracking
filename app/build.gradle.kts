@@ -44,7 +44,15 @@ android {
 
 dependencies {
     //modules
+    implementation(project(":core:common"))
+    implementation(project(":core:designsystem"))
+    implementation(project(":core:database"))
+    implementation(project(":core:network"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:data"))
     implementation(project(":balance:presentation"))
+    implementation(project(":balance:domain"))
+    implementation(project(":balance:data"))
     implementation(project(":transaction:presentation"))
 
     //core
