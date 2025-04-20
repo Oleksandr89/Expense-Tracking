@@ -1,8 +1,10 @@
 package com.example.data.repository
 
 import com.example.database.dao.BalanceDao
-import com.example.database.model.BalanceEntity
-import com.example.domain.model.Balance
+import com.example.domain.model.BalanceModel
+import com.example.domain.model.toBalanceEntity
+import com.example.domain.model.toBalanceModel
+import com.example.domain.repository.BalanceRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -11,19 +13,16 @@ import javax.inject.Inject
 
 class BalanceRepositoryImpl @Inject constructor(
     private val balanceDao: BalanceDao
-) : com.example.domain.repository.BalanceRepository {
+) : BalanceRepository {
 
-    override fun getBalance(): Flow<Balance> {
-        return balanceDao.getBalance().map {
-            Balance(
-                amount = it?.amount?.toBigDecimal() ?: 0.toBigDecimal(),
-                amountStr = it?.amount.orEmpty()
-            )
+    override fun getBalance(): Flow<BalanceModel> {
+        return balanceDao.getBalance().map { balanceEntity ->
+            balanceEntity.toBalanceModel()
         }
     }
 
-    override suspend fun updateBalance(amount: String) = withContext(Dispatchers.IO) {
-        balanceDao.updateBalance(BalanceEntity(amount = amount))
+    override suspend fun updateBalance(balance: BalanceModel) = withContext(Dispatchers.IO) {
+        balanceDao.updateBalance(balance.toBalanceEntity())
     }
 
 }

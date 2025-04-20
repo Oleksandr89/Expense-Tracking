@@ -28,7 +28,7 @@ fun TextButton(
             Icon(
                 painter = painterResource(icon),
                 tint = MaterialTheme.colorScheme.onSurface,
-                contentDescription = text
+                contentDescription = "Icon $text"
             )
             Spacer(Modifier.width(8.dp))
         }

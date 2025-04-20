@@ -26,7 +26,11 @@ android {
 
 dependencies {
     //modules
+    implementation(project(":core:common"))
     implementation(project(":core:database"))
+
+    //core
+    implementation(libs.androidx.core.ktx)
 
     //di
     implementation(libs.hilt.android)
@@ -36,10 +40,7 @@ dependencies {
     implementation(libs.paging.common.android)
     implementation(libs.androidx.room.paging)
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    //testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }

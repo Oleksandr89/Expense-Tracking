@@ -3,7 +3,8 @@ package com.example.data.repository
 import androidx.paging.PagingSource
 import com.example.database.dao.TransactionDao
 import com.example.database.model.TransactionEntity
-import com.example.domain.model.Transaction
+import com.example.domain.model.TransactionModel
+import com.example.domain.model.toTransactionEntity
 import com.example.domain.repository.TransactionsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -17,16 +18,9 @@ class TransactionsRepositoryImpl @Inject constructor(
         return transactionDao.getTransactions()
     }
 
-    override suspend fun addTransaction(transaction: Transaction) {
+    override suspend fun addTransaction(transaction: TransactionModel) {
         withContext(Dispatchers.IO) {
-            transactionDao.addTransaction(
-                TransactionEntity(
-                    timestamp= transaction.timestamp,
-                    amount = transaction.amount,
-                    category = transaction.category,
-                    transactionType = transaction.transactionType
-                )
-            )
+            transactionDao.addTransaction(transaction.toTransactionEntity())
         }
     }
 }

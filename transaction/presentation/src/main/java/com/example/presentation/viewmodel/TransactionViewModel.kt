@@ -2,8 +2,12 @@ package com.example.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.common.model.TransactionCategory
+import com.example.common.model.TransactionType
+import com.example.common.util.toBigDecimal
 import com.example.designSystem.R
-import com.example.domain.model.Transaction
+import com.example.domain.model.toBalanceModel
+import com.example.domain.model.toTransactionModel
 import com.example.domain.usecase.BalanceUseCase
 import com.example.domain.usecase.TransactionsUseCase
 import com.example.presentation.model.Category
@@ -17,7 +21,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.math.RoundingMode
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,11 +34,12 @@ class TransactionViewModel @Inject constructor(
     private val _categories = MutableStateFlow<List<Category>>(emptyList())
     internal val categories = _categories.asStateFlow()
 
-    private val _uiState = MutableStateFlow<TransactionUiState>(TransactionUiState())
+    private val _uiState = MutableStateFlow(TransactionUiState())
     internal val uiState = _uiState.combine(categories) { uiState, categories ->
         TransactionUiState(
             navigateUp = uiState.navigateUp,
             isError = uiState.isError,
+            errorTextResId = uiState.errorTextResId,
             categories = categories
         )
     }.stateIn(
@@ -44,61 +48,72 @@ class TransactionViewModel @Inject constructor(
         initialValue = TransactionUiState()
     )
 
+    internal fun addTransaction(amount: String, category: TransactionCategory?) {
+        viewModelScope.launch {
+            if (amount.isEmpty() || category == null) {
+                _uiState.update {
+                    it.copy(
+                        isError = true,
+                        errorTextResId = R.string.choose_category_enter_amount
+                    )
+                }
+                return@launch
+            }
+
+            val balanceBigDecimal = balance.first().amount
+            val amountBigDecimal = amount.toBigDecimal()
+
+            if (balanceBigDecimal >= amountBigDecimal) {
+                transactionsUseCase.addTransaction(
+                    amount.toTransactionModel(
+                        category = category,
+                        transactionType = TransactionType.Withdraw
+                    )
+                )
+
+                val sumBigDecimal = balanceBigDecimal.minus(amountBigDecimal)
+                balanceUseCase.updateBalance(sumBigDecimal.toBalanceModel())
+                _uiState.update { it.copy(navigateUp = true) }
+            } else {
+                _uiState.update {
+                    it.copy(
+                        isError = true,
+                        errorTextResId = R.string.insufficient_funds
+                    )
+                }
+            }
+        }
+    }
+
     init {
         _categories.update {
             listOf(
                 Category(
-                    id = R.string.groceries,
+                    type = TransactionCategory.Groceries,
                     iconResId = R.drawable.ic_24_shopping_cart,
                     categoryResId = R.string.groceries
                 ),
                 Category(
-                    id = R.string.taxi,
+                    type = TransactionCategory.Taxi,
                     iconResId = R.drawable.ic_24_directions_car,
                     categoryResId = R.string.taxi
                 ),
                 Category(
-                    id = R.string.electronics,
+                    type = TransactionCategory.Electronics,
                     iconResId = R.drawable.ic_24_monitor,
                     categoryResId = R.string.electronics
                 ),
                 Category(
-                    id = R.string.restaurant,
+                    type = TransactionCategory.Restaurant,
                     iconResId = R.drawable.ic_24_local_dining,
                     categoryResId = R.string.restaurant
                 ),
                 Category(
-                    id = R.string.other,
+                    type = TransactionCategory.Other,
                     iconResId = R.drawable.ic_24_shopping_bag,
                     categoryResId = R.string.other
                 )
             )
-        }
-    }
-
-    internal fun addTransaction(amount: String, category: String) {
-        viewModelScope.launch {
-            if (amount.isEmpty() || category.isEmpty()) {
-                _uiState.update { it.copy(isError = true) }
-                return@launch
-            }
-
-            val balance = balance.first().amount
-            val amountBigDecimal = amount.toBigDecimal().setScale(2, RoundingMode.HALF_UP)
-            if (balance >= amountBigDecimal) {
-                transactionsUseCase.addTransaction(
-                    Transaction(
-                        timestamp = System.currentTimeMillis(),
-                        amount = amount,
-                        category = category,
-                        transactionType = "withdraw"
-                    )
-                )
-                balanceUseCase.updateBalance(balance.minus(amountBigDecimal).toPlainString())
-                _uiState.update { it.copy(navigateUp = true) }
-            } else {
-
-            }
         }
     }
 

@@ -25,6 +25,9 @@ android {
 }
 
 dependencies {
+    //core
+    implementation(libs.androidx.core.ktx)
+
     //di
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
@@ -34,10 +37,7 @@ dependencies {
     implementation(libs.androidx.room.paging)
     ksp(libs.androidx.room.compiler)
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
+    //testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }

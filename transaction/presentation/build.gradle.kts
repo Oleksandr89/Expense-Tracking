@@ -28,6 +28,7 @@ android {
 dependencies {
     //modules
     implementation(project(":core:designsystem"))
+    implementation(project(":core:common"))
     implementation(project(":core:domain"))
 
     //core

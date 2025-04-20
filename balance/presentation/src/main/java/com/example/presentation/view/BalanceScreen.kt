@@ -43,15 +43,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
-import com.example.common.util.formatDayMonth
-import com.example.common.util.formatTime
+import com.example.common.model.TransactionType
 import com.example.designSystem.R
+import com.example.designsystem.balansinfo.BalanceInfo
 import com.example.designsystem.bottomsheet.ModalBottomSheet
 import com.example.designsystem.buttons.TextButton
+import com.example.designsystem.exchangerate.ExchangeRate
 import com.example.designsystem.transactionitems.DateItem
 import com.example.designsystem.transactionitems.TransactionItem
-import com.example.domain.model.Transaction
 import com.example.presentation.model.BalanceUiState
+import com.example.presentation.model.Transaction
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,8 +60,8 @@ internal fun BalanceScreen(
     modifier: Modifier = Modifier,
     uiState: State<BalanceUiState>,
     transactions: LazyPagingItems<Transaction>,
+    onAddMoneyClick: (String) -> Unit,
     onAddTransactionCLick: () -> Unit,
-    onAddMoneyCLick: (String) -> Unit,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val sheetState = rememberModalBottomSheetState()
@@ -83,20 +84,10 @@ internal fun BalanceScreen(
                         )
                     },
                     actions = {
-                        Column(
-                            modifier = Modifier.padding(horizontal = 8.dp)
-                        ) {
-                            Text(
-                                text = "Exchange Rate",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color.Gray
-                            )
-                            Text(
-                                text = uiState.value.exchangeRate,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = Color.Black
-                            )
-                        }
+                        ExchangeRate(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            exchangeRate = uiState.value.exchangeRate
+                        )
                     }
                 )
             }
@@ -107,51 +98,15 @@ internal fun BalanceScreen(
                     .padding(padding)
                     .fillMaxSize()
             ) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Spacer(Modifier.height(16.dp))
-                    Image(
-                        modifier = Modifier
-                            .size(64.dp)
-                            .align(Alignment.CenterHorizontally),
-                        painter = painterResource(R.drawable.btc),
-                        contentDescription = "icon bitcoin"
-                    )
-                    Text(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally),
-                        text = uiState.value.amount,
-                        style = MaterialTheme.typography.titleLarge,
-                        color = Color.Black
-                    )
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        TextButton(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(48.dp),
-                            iconRsId = R.drawable.ic_24_plus,
-                            text = stringResource(R.string.add_money),
-                            onClick = { showBottomSheet = true }
-                        )
-                        TextButton(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(48.dp),
-                            iconRsId = R.drawable.ic_24_double_arrow_right,
-                            text = stringResource(R.string.add_transaction),
-                            onClick = onAddTransactionCLick
-                        )
-
-                    }
-                }
+                Spacer(Modifier.height(16.dp))
+                BalanceInfo(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    balance = uiState.value.balance,
+                    onAddMoneyClick = { showBottomSheet = true },
+                    onAddTransactionCLick = onAddTransactionCLick
+                )
 
                 Spacer(Modifier.height(16.dp))
                 LazyColumn(
@@ -165,31 +120,41 @@ internal fun BalanceScreen(
                             val transaction = transactions[index] ?: return@items
 
                             when (transaction.transactionType) {
-                                "recharge" -> {
-                                    val time = transaction.timestamp.formatTime()
+                                is TransactionType.Recharge -> {
                                     TransactionItem(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(56.dp)
+                                            .padding(horizontal = 16.dp),
                                         iconResId = R.drawable.ic_24_double_arrow_down,
-                                        text = transaction.category,
-                                        time = time,
-                                        amount = "+${transaction.amount} BTC",
+                                        text = transaction.category.name,
+                                        time = transaction.time,
+                                        amount = transaction.amount,
                                         color = Color.Green
                                     )
                                 }
 
-                                "withdraw" -> {
-                                    val time = transaction.timestamp.formatTime()
+                                is TransactionType.Withdraw -> {
                                     TransactionItem(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(56.dp)
+                                            .padding(horizontal = 16.dp),
                                         iconResId = R.drawable.ic_24_double_arrow_up,
-                                        text = transaction.category,
-                                        time = time,
-                                        amount = "-${transaction.amount} BTC",
+                                        text = transaction.category.name,
+                                        time = transaction.time,
+                                        amount = transaction.amount,
                                         color = Color.Red
                                     )
                                 }
 
-                                "date" -> {
-                                    val date = transaction.timestamp.formatDayMonth()
-                                    DateItem(date = date)
+                                is TransactionType.Date -> {
+                                    DateItem(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(48.dp),
+                                        date = transaction.date
+                                    )
                                 }
 
                                 else -> {}
@@ -215,8 +180,7 @@ internal fun BalanceScreen(
                         }
 
                         Column(
-                            modifier = Modifier
-                                .padding(vertical = 24.dp, horizontal = 16.dp),
+                            modifier = Modifier.padding(vertical = 24.dp, horizontal = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             Text(
@@ -236,7 +200,7 @@ internal fun BalanceScreen(
                                         .focusRequester(focusRequester),
                                     value = amount,
                                     onValueChange = { input ->
-                                        if (input.text.isEmpty() || regex.matches(input.text)) {
+                                        if (input.text.isEmpty() || (regex.matches(input.text) && input.text.length <= 10)) {
                                             amount = input
                                         }
                                     },
@@ -251,7 +215,7 @@ internal fun BalanceScreen(
                                         Image(
                                             modifier = Modifier.size(32.dp),
                                             painter = painterResource(R.drawable.btc),
-                                            contentDescription = "icon bitcoin"
+                                            contentDescription = "Bitcoin Icon"
                                         )
                                     },
                                     shape = RoundedCornerShape(16.dp),
@@ -264,7 +228,7 @@ internal fun BalanceScreen(
                                         onDone = {
                                             showBottomSheet = false
                                             keyboardController?.hide()
-                                            onAddMoneyCLick(amount.text)
+                                            onAddMoneyClick(amount.text)
                                         }
                                     )
                                 )
@@ -275,7 +239,7 @@ internal fun BalanceScreen(
                                     onClick = {
                                         showBottomSheet = false
                                         keyboardController?.hide()
-                                        onAddMoneyCLick(amount.text)
+                                        onAddMoneyClick(amount.text)
                                     }
                                 )
                             }

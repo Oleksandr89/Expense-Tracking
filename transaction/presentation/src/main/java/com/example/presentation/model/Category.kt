@@ -1,7 +1,9 @@
 package com.example.presentation.model
 
+import com.example.common.model.TransactionCategory
+
 data class Category (
-    val id: Int,
+    val type: TransactionCategory,
     val iconResId: Int,
     val categoryResId: Int
 )

@@ -1,9 +1,9 @@
 package com.example.domain.repository
 
-import com.example.domain.model.ExchangeRate
+import com.example.domain.model.ExchangeRateModel
 
 interface ExchangeRateRepository {
 
-    suspend fun fetchExchangeRate(): ExchangeRate
+    suspend fun fetchExchangeRate(): ExchangeRateModel
 
 }

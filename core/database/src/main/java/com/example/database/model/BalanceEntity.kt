@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class BalanceEntity(
     @PrimaryKey
     val id: Int = 1,
-    val amount: String
+    val amountStr: String
 )

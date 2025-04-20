@@ -14,4 +14,6 @@
     <string name="choose_category">Choose category</string>
     <string name="choose_category_enter_amount">Choose category or/and enter amount</string>
     <string name="insufficient_funds">Insufficient funds, top up your balance</string>
+    <string name="exchange_rate">Exchange Rate</string>
+    <string name="transaction">Transaction</string>
 </resources>

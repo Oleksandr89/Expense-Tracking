@@ -38,7 +38,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -47,6 +46,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import com.example.common.model.TransactionCategory
 import com.example.designSystem.R
 import com.example.designsystem.bottomsheet.ModalBottomSheet
 import com.example.designsystem.buttons.TextButton
@@ -59,11 +59,10 @@ internal fun TransactionScreen(
     modifier: Modifier = Modifier,
     uiState: State<TransactionUiState>,
     onBackPressedCLick: () -> Unit,
-    onAddTransactionCLick: (String, String) -> Unit,
+    onAddTransactionCLick: (String, TransactionCategory?) -> Unit,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-    val context = LocalContext.current
     val sheetState = rememberModalBottomSheetState(true)
     val focusRequester = remember { FocusRequester() }
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -81,7 +80,7 @@ internal fun TransactionScreen(
                     modifier = Modifier.fillMaxWidth(),
                     title = {
                         Text(
-                            text = "Transaction",
+                            text = stringResource(R.string.transaction),
                             style = MaterialTheme.typography.bodyLarge,
                             color = Color.Black
                         )
@@ -93,7 +92,7 @@ internal fun TransactionScreen(
                             Icon(
                                 painter = painterResource(R.drawable.ic_24_arrow_left),
                                 tint = Color.Black,
-                                contentDescription = "backButton"
+                                contentDescription = "Button Back"
                             )
                         }
                     }
@@ -130,7 +129,7 @@ internal fun TransactionScreen(
                                 contentDescription = "Warning Icon"
                             )
                             Text(
-                                text = stringResource(R.string.choose_category_enter_amount),
+                                text = stringResource(uiState.value.errorTextResId),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = Color.Black
                             )
@@ -150,7 +149,7 @@ internal fun TransactionScreen(
                         Icon(
                             painter = painterResource(iconResId),
                             tint = Color.Black,
-                            contentDescription = "Selected category Icon"
+                            contentDescription = "Selected Category Icon"
                         )
                     }
                     Text(
@@ -173,7 +172,7 @@ internal fun TransactionScreen(
                         .focusRequester(focusRequester),
                     value = amount,
                     onValueChange = { input ->
-                        if (input.text.isEmpty() || regex.matches(input.text)) {
+                        if (input.text.isEmpty() || (regex.matches(input.text) && input.text.length <= 10)) {
                             amount = input
                         }
                     },
@@ -213,7 +212,7 @@ internal fun TransactionScreen(
                         keyboardController?.hide()
                         onAddTransactionCLick(
                             amount.text,
-                            selectedCategory.value?.categoryResId?.let { context.getString(it) } ?: ""
+                            selectedCategory.value?.type
                         )
                     }
                 )

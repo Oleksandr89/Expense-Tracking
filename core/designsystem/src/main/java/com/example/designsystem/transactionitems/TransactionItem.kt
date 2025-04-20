@@ -31,10 +31,7 @@ fun TransactionItem(
     color: Color
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(56.dp)
-            .padding(horizontal = 16.dp),
+        modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -48,7 +45,7 @@ fun TransactionItem(
             Icon(
                 painter = painterResource(iconResId),
                 tint = Color.Black,
-                contentDescription = "icon"
+                contentDescription = "Transaction Icon"
             )
         }
         Column(

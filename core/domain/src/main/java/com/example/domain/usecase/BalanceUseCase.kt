@@ -1,5 +1,6 @@
 package com.example.domain.usecase
 
+import com.example.domain.model.BalanceModel
 import com.example.domain.repository.BalanceRepository
 import javax.inject.Inject
 
@@ -9,8 +10,8 @@ class BalanceUseCase @Inject constructor(
 
     fun fetchBalance() = balanceRepository.getBalance()
 
-    suspend fun updateBalance(amount: String) {
-        balanceRepository.updateBalance(amount)
+    suspend fun updateBalance(balance: BalanceModel) {
+        balanceRepository.updateBalance(balance)
     }
 
 }
