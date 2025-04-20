@@ -26,6 +26,12 @@ android {
 }
 
 dependencies {
+    //modules
+    implementation(project(":core:common"))
+    implementation(project(":core:designsystem"))
+    implementation(project(":core:domain"))
+    implementation(project(":core:database"))
+    implementation(project(":balance:domain"))
 
     //core
     implementation(libs.androidx.core.ktx)
@@ -46,6 +52,11 @@ dependencies {
     //di
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+
+    //paging
+    implementation(libs.paging.compose)
+    implementation(libs.paging.common.android)
+    implementation(libs.androidx.room.paging)
 
     //testing
     testImplementation(libs.junit)
