@@ -1,11 +1,13 @@
 package com.example.presentation.model
 
+import androidx.compose.runtime.Stable
 import com.example.common.model.TransactionCategory
 import com.example.database.model.TransactionEntity
 import com.example.common.model.TransactionType
 import com.example.common.util.formatDayMonth
 import com.example.common.util.formatTime
 
+@Stable
 data class Transaction(
     val time: String,
     val date: String,

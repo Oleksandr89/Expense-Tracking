@@ -1,8 +1,10 @@
 package com.example.presentation.model
 
+import androidx.compose.runtime.Stable
 import com.example.domain.model.BalanceModel
 import com.example.domain.model.ExchangeRateModel
 
+@Stable
 data class BalanceUiState(
     val balance: String = "",
     val exchangeRate: String = ""

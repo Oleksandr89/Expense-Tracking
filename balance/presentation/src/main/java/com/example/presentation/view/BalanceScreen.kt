@@ -67,7 +67,14 @@ internal fun BalanceScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
     val sheetState = rememberModalBottomSheetState()
     val focusRequester = remember { FocusRequester() }
-    var showBottomSheet by remember { mutableStateOf(false) }
+    val showBottomSheet = remember { mutableStateOf(false) }
+
+    LaunchedEffect(sheetState.currentValue) {
+        if (sheetState.currentValue == SheetValue.Expanded) {
+            focusRequester.requestFocus()
+            keyboardController?.show()
+        }
+    }
 
     Scaffold(
         modifier = modifier,
@@ -105,7 +112,7 @@ internal fun BalanceScreen(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     balance = uiState.value.balance,
-                    onAddMoneyClick = { showBottomSheet = true },
+                    onAddMoneyClick = { showBottomSheet.value = true },
                     onAddTransactionCLick = onAddTransactionCLick
                 )
 
@@ -165,20 +172,13 @@ internal fun BalanceScreen(
                 }
             }
 
-            if (showBottomSheet) {
+            if (showBottomSheet.value) {
                 ModalBottomSheet(
                     sheetState = sheetState,
-                    onDismissRequest = { showBottomSheet = false },
+                    onDismissRequest = { showBottomSheet.value = false },
                     content = {
-                        val regex = "^\\d+(\\.)?\\d*\$".toRegex()
+                        val regex = remember { "^\\d+(\\.)?\\d*\$".toRegex() }
                         var amount by remember { mutableStateOf(TextFieldValue(text = "")) }
-
-                        LaunchedEffect(sheetState.currentValue) {
-                            if (sheetState.currentValue == SheetValue.Expanded) {
-                                focusRequester.requestFocus()
-                                keyboardController?.show()
-                            }
-                        }
 
                         Column(
                             modifier = Modifier.padding(vertical = 24.dp, horizontal = 8.dp),
@@ -194,7 +194,6 @@ internal fun BalanceScreen(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-
                                 OutlinedTextField(
                                     modifier = Modifier
                                         .weight(1f)
@@ -227,7 +226,7 @@ internal fun BalanceScreen(
                                     ),
                                     keyboardActions = KeyboardActions(
                                         onDone = {
-                                            showBottomSheet = false
+                                            showBottomSheet.value = false
                                             keyboardController?.hide()
                                             onAddMoneyClick(amount.text)
                                         }
@@ -239,7 +238,7 @@ internal fun BalanceScreen(
                                         .height(56.dp),
                                     text = stringResource(R.string.add),
                                     onClick = {
-                                        showBottomSheet = false
+                                        showBottomSheet.value = false
                                         keyboardController?.hide()
                                         onAddMoneyClick(amount.text)
                                     }
