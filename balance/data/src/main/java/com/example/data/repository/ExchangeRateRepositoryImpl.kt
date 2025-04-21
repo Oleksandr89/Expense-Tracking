@@ -10,12 +10,16 @@ class ExchangeRateRepositoryImpl @Inject constructor(
 ) : ExchangeRateRepository {
 
     override suspend fun fetchExchangeRate(): ExchangeRateModel {
-        val response = service.fetchExchangeRate()
+        try {
+            val response = service.fetchExchangeRate()
 
-        return if (response.isSuccessful) {
-            ExchangeRateModel(response.body().toString())
-        } else {
-            ExchangeRateModel()
+            return if (response.isSuccessful) {
+                ExchangeRateModel(response.body().toString())
+            } else {
+                ExchangeRateModel()
+            }
+        } catch (exception: Exception) {
+            return ExchangeRateModel()
         }
     }
 
