@@ -69,13 +69,6 @@ internal fun BalanceScreen(
     val focusRequester = remember { FocusRequester() }
     val showBottomSheet = remember { mutableStateOf(false) }
 
-    LaunchedEffect(sheetState.currentValue) {
-        if (sheetState.currentValue == SheetValue.Expanded) {
-            focusRequester.requestFocus()
-            keyboardController?.show()
-        }
-    }
-
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -134,7 +127,7 @@ internal fun BalanceScreen(
                                             .fillMaxWidth()
                                             .height(56.dp)
                                             .padding(horizontal = 16.dp),
-                                        iconResId = R.drawable.ic_24_double_arrow_down,
+                                        iconResId = transaction.iconResId,
                                         text = transaction.category.name,
                                         time = transaction.time,
                                         amount = transaction.amount,
@@ -148,7 +141,7 @@ internal fun BalanceScreen(
                                             .fillMaxWidth()
                                             .height(56.dp)
                                             .padding(horizontal = 16.dp),
-                                        iconResId = R.drawable.ic_24_double_arrow_up,
+                                        iconResId = transaction.iconResId,
                                         text = transaction.category.name,
                                         time = transaction.time,
                                         amount = transaction.amount,
@@ -179,6 +172,13 @@ internal fun BalanceScreen(
                     content = {
                         val regex = remember { "^\\d+(\\.)?\\d*\$".toRegex() }
                         var amount by remember { mutableStateOf(TextFieldValue(text = "")) }
+
+                        LaunchedEffect(sheetState.currentValue) {
+                            if (sheetState.currentValue == SheetValue.Expanded) {
+                                focusRequester.requestFocus()
+                                keyboardController?.show()
+                            }
+                        }
 
                         Column(
                             modifier = Modifier.padding(vertical = 24.dp, horizontal = 8.dp),

@@ -11,6 +11,7 @@ import androidx.paging.map
 import com.example.common.model.TransactionCategory
 import com.example.common.model.TransactionType
 import com.example.common.util.toBigDecimal
+import com.example.designSystem.R
 import com.example.domain.model.ExchangeRateModel
 import com.example.domain.model.toBalanceModel
 import com.example.domain.model.toTransactionModel
@@ -88,6 +89,7 @@ class BalanceViewModel @Inject constructor(
             balanceUseCase.updateBalance(sumBigDecimal.toBalanceModel())
             transactionsUseCase.addTransaction(
                 amount.toTransactionModel(
+                    iconResId = R.drawable.ic_24_credit_card_down,
                     category = TransactionCategory.RechargeBalance,
                     transactionType = TransactionType.Recharge
                 )

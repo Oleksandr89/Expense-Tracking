@@ -12,6 +12,7 @@ data class Transaction(
     val time: String,
     val date: String,
     val amount: String,
+    val iconResId: Int,
     val category: TransactionCategory,
     val transactionType: TransactionType
 )
@@ -24,6 +25,7 @@ fun TransactionEntity.toTransaction() = Transaction(
         TransactionType.Withdraw.name -> "-${amount} BTC"
         else -> amount
     },
+    iconResId = iconResId,
     category = when (category) {
         TransactionCategory.RechargeBalance.name -> TransactionCategory.RechargeBalance
         TransactionCategory.Groceries.name -> TransactionCategory.Groceries

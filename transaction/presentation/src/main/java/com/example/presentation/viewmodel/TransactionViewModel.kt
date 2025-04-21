@@ -48,9 +48,9 @@ class TransactionViewModel @Inject constructor(
         initialValue = TransactionUiState()
     )
 
-    internal fun addTransaction(amount: String, category: TransactionCategory?) {
+    internal fun addTransaction(amount: String, category: Category?) {
         viewModelScope.launch {
-            if ((amount.isEmpty() || amount.toBigDecimal() == "0".toBigDecimal())  || category == null) {
+            if ((amount.isEmpty() || amount.toBigDecimal() == "0".toBigDecimal()) || category == null) {
                 _uiState.update {
                     it.copy(
                         isError = true,
@@ -66,7 +66,8 @@ class TransactionViewModel @Inject constructor(
             if (balanceBigDecimal >= amountBigDecimal) {
                 transactionsUseCase.addTransaction(
                     amount.toTransactionModel(
-                        category = category,
+                        iconResId = category.iconResId,
+                        category = category.type,
                         transactionType = TransactionType.Withdraw
                     )
                 )

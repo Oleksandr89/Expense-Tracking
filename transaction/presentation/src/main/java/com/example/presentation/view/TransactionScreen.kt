@@ -59,7 +59,7 @@ internal fun TransactionScreen(
     modifier: Modifier = Modifier,
     uiState: State<TransactionUiState>,
     onBackPressedCLick: () -> Unit,
-    onAddTransactionCLick: (String, TransactionCategory?) -> Unit,
+    onAddTransactionCLick: (String, Category?) -> Unit,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -212,7 +212,7 @@ internal fun TransactionScreen(
                         keyboardController?.hide()
                         onAddTransactionCLick(
                             amount.text,
-                            selectedCategory.value?.type
+                            selectedCategory.value
                         )
                     }
                 )
