@@ -34,16 +34,15 @@ All modules use Hilt for managing dependencies across the app.
 
 **Testable and scalable codebase**  
 Architecture is designed to allow for easy testing and future scaling.  
-  
-  
+
   
 <b><h3>Screenshots</h3></b>
 ___
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/688d5800-d90d-47f0-8d44-ea3793f00200" alt="Image 1" width="30%" />
+  <img src="https://github.com/user-attachments/assets/336ae7ed-fea2-4620-a08c-c7aeab95dcb5" alt="Image 1" width="30%" />
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://github.com/user-attachments/assets/b92efeb1-5b6b-4b29-87fc-70821d494219" alt="Image 2" width="30%" />
+  <img src="https://github.com/user-attachments/assets/4ee81bd0-5bc0-4680-9151-887bddb54d84" alt="Image 2" width="30%" />
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://github.com/user-attachments/assets/9415c56e-0fbf-4fd0-9d84-55999b564557" alt="Image 3" width="30%" />
+  <img src="https://github.com/user-attachments/assets/3252b47f-77b9-49b9-a78a-83903a1d39c6" alt="Image 3" width="30%" />
 </p>
