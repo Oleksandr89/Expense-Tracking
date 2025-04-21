@@ -80,7 +80,7 @@ class BalanceViewModel @Inject constructor(
     )
 
     internal fun updateBalance(amount: String) {
-        if (amount.isEmpty()) return
+        if (amount.isEmpty() || amount.toBigDecimal() == "0".toBigDecimal()) return
         viewModelScope.launch {
             val amountBigDecimal = amount.toBigDecimal()
             val sumBigDecimal = balance.first().amount.plus(amountBigDecimal)

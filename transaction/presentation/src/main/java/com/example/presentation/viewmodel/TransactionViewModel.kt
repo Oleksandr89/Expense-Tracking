@@ -50,7 +50,7 @@ class TransactionViewModel @Inject constructor(
 
     internal fun addTransaction(amount: String, category: TransactionCategory?) {
         viewModelScope.launch {
-            if (amount.isEmpty() || category == null) {
+            if ((amount.isEmpty() || amount.toBigDecimal() == "0".toBigDecimal())  || category == null) {
                 _uiState.update {
                     it.copy(
                         isError = true,
