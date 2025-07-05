@@ -25,6 +25,9 @@ android {
 }
 
 dependencies {
+    //modules
+    implementation(project(":core:common"))
+    
     //core
     implementation(libs.androidx.core.ktx)
 
@@ -39,5 +42,7 @@ dependencies {
 
     //testing
     testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
 }
